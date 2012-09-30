@@ -2,19 +2,19 @@ package main
 
 import (
 	"crypto/rand"
-	"math/big"
+	"io"
 )
 
 //
-func GenPass(tag string) string {
-	p := ""           //initialize an empty string for the password
-	for len(p) < 16 { //getting 128 bits
-		c, _ := rand.Int(rand.Reader, big.NewInt(int64(0xffffffff)))
-		b := byte(c.Int64())
-		if b > byte(0x20) && b < byte(0x80) {
-			p += string(b) //if the character is ASCII, add it to the string
-		}
+func GenPass(tag string, length int) string {
+	p := make([]byte, length)
+	if _, err := io.ReadFull(rand.Reader, p); err != nil {
+		panic(err)
 	}
-	password := tag + "_" + p
+	for i := range p {
+		p[i] &= 0x3f
+		p[i] += 0x20
+	}
+	password := tag + "_" + string(p)
 	return password
 }
