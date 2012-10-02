@@ -24,9 +24,16 @@ func ConnectTo(conf *cjdngo.Conf, connection string, password string, publicKey 
 	conf.Interfaces.UDPInterfaceBlock[connection] = conn
 	//add the new entry
 }
-/*
+
 func ConnectToJSON(conf *cjdngo.Conf, connections map[string]conf.Connection) {
 	if len(connections) == nil {
 		return
 	}
-	conf.Inter*/
+	for i, j := range connections { //for every item in connections,
+		//i will be the connection information, such as ipv4 and port.
+		//j will be the Connection interface itself.
+		
+		//This will map the new Connection interface to the connection information on the existing Conf object.
+		conf.Interfaces.UDPInterface.ConnectTo[i] = connections[j]
+	}
+}
