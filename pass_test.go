@@ -1,8 +1,8 @@
 package main
 
 import (
-	"testing"
 	"cjdngo"
+	"testing"
 )
 
 func TestPass(t *testing.T) {

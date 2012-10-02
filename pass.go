@@ -15,7 +15,7 @@ func GenPass(tag string) string {
 		c += 0x21            //we need ascii characters
 		p += string(c)
 	}
-	
+
 	if tag != "" {
 		p = tag + "_" + p
 	}
