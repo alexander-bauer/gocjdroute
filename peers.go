@@ -25,7 +25,8 @@ func ConnectTo(conf *cjdngo.Conf, connection string, password string, publicKey 
 	//add the new entry
 }
 
-func ConnectToJSON(conf *cjdngo.Conf, connections map[string]*cjdngo.Connection) {
+//ConnectToMap allows for adding multiple Connections in one operation. It is primarly meant as a back end for ConnectToJSON, but can be used alone, as well.
+func ConnectToMap(conf *cjdngo.Conf, connections map[string]*cjdngo.Connection) {
 	if len(connections) == 0 {
 		return
 	}
@@ -37,3 +38,5 @@ func ConnectToJSON(conf *cjdngo.Conf, connections map[string]*cjdngo.Connection)
 		conf.Interfaces.UDPInterface.ConnectTo[i] = *j
 	}
 }
+
+//TODO parse map from JSON []byte
