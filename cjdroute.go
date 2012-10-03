@@ -30,7 +30,7 @@ func main() {
 		//BUG(DuoNoxSol): Does not implement indexesConnectTo
 	}
 	
-	print(fListAuth + "\n")
+	print(fListAuth , "\n")
 	if fListAuth == true {
 		print("listing\n")
 		print(ListAuth(conf, indexesAuth, false))
