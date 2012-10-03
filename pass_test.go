@@ -17,6 +17,9 @@ func TestAuthorize(t *testing.T) {
 	}
 	p := Authorize(conf, "test", "Maryland", "")
 	t.Log("Authorized node of 'test' with password: " + p)
+	
+	print(ListAuth(conf, []int{0, 1}, true))
+	
 	err = cjdngo.WriteConf("./temp.conf", *conf)
 	if err != nil {
 		t.Fatal(err)
