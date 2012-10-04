@@ -30,7 +30,7 @@ func ConnectTo(conf *cjdngo.Conf, connection, password, publicKey, name, locatio
 	//add the new entry
 }
 
-//Removes the connection identified by 'connectionDetail' from 'conf.'
+//Removes the connection identified exactly by 'connectionDetail' from 'conf.'
 func RemoveConnectTo(conf *cjdngo.Conf, connectionDetail string) {
 	delete(conf.Interfaces.UDPInterface.ConnectTo, connectionDetail)
 }
