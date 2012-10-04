@@ -29,8 +29,10 @@ func SearchConnectTo(conf *cjdngo.Conf, term string) []string {
 	matches := make([]string, 0)
 
 	for i := range conf.Interfaces.UDPInterface.ConnectTo {
-		//check if the Name field contains it...
-		if strings.Contains(conf.Interfaces.UDPInterface.ConnectTo[i].Name, term) {
+		//check if the connection detail field contains it...
+		if strings.Contains(i, term) {
+			matches = append(matches, i)
+		} else if strings.Contains(conf.Interfaces.UDPInterface.ConnectTo[i].Name, term) {
 			matches = append(matches, i)
 		} else if strings.Contains(conf.Interfaces.UDPInterface.ConnectTo[i].Location, term) {
 			matches = append(matches, i)
