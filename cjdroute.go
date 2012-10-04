@@ -22,7 +22,7 @@ var fShowPass = flag.Bool("show-pass", false, "Prints passwords when listing aut
 
 //BUG(DuoNoxSol): There's no flag for displaying passwords.
 
-var conf = &cjdngo.Conf{} //conf is the config file specified by fFile
+var config = &cjdngo.Conf{} //config is the config file specified by fFile
 
 var indexesAuth = []int{}         //indexesAuth will be used to identify auth fields based on search terms
 var indexesConnectTo = []string{} //connectAuth will be used to identify connection blocks based on search terms
@@ -30,7 +30,7 @@ var indexesConnectTo = []string{} //connectAuth will be used to identify connect
 func main() {
 	flag.Parse()
 
-	conf, err := cjdngo.ReadConf(*fFile)
+	config, err := cjdngo.ReadConf(*fFile)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,26 +38,30 @@ func main() {
 
 	if *fList || *fListAuth || *fListConnectTo {
 		//This section will update the indexes for listing.
-		indexesAuth = SearchAuth(conf, *fSearch)
-		indexesConnectTo = SearchConnectTo(conf, *fSearch)
+		indexesAuth = SearchAuth(config, *fSearch)
+		indexesConnectTo = SearchConnectTo(config, *fSearch)
 
 		if *fList {
-			print(ListAuth(conf, indexesAuth, *fShowPass))
-			print(ListConnectTo(conf, indexesConnectTo, *fShowPass))
+			print(ListAuth(config, indexesAuth, *fShowPass))
+			print(ListConnectTo(config, indexesConnectTo, *fShowPass))
 			return
 		} else if *fListAuth {
-			print(ListAuth(conf, indexesAuth, *fShowPass))
+			print(ListAuth(config, indexesAuth, *fShowPass))
 			return
 		} else if *fListConnectTo {
-			print(ListConnectTo(conf, indexesConnectTo, *fShowPass))
+			print(ListConnectTo(config, indexesConnectTo, *fShowPass))
 			return
 		}
 	}
 	
 	if *fAuthorize {
-		UIAuthorize(flag.Arg(0), flag.Arg(1), flag.Arg(2))
+		UIAuthorize(config, flag.Arg(0), flag.Arg(1), flag.Arg(2))
+		return
 	}
 	if *fConnectTo {
+		//UIConnectTo will import a JSON map if it is the first argument, and behave normally if given other arguments.
+		UIConnectTo(config, flag.Arg(0), flag.Arg(1), flag.Arg(2), flag.Arg(3), flag.Arg(4), flag.Arg(5))
+		return
 	}
 
 	os.Exit(0)
