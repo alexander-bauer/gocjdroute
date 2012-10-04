@@ -15,10 +15,10 @@ func ListAuth(conf *cjdngo.Conf, indexes []int, showPass bool) string {
 		
 		s += "--- ( " + strconv.Itoa(index) + " )\n"
 		s += "name:     " + conf.AuthorizedPasswords[index].Name + "\n"
-		if conf.AuthorizedPasswords[i].Location != "" {
+		if conf.AuthorizedPasswords[index].Location != "" {
 			s += "location: " + conf.AuthorizedPasswords[index].Location + "\n"
 		}
-		if conf.AuthorizedPasswords[i].IPv6 != "" {
+		if conf.AuthorizedPasswords[index].IPv6 != "" {
 			s += "IPv6:     " + conf.AuthorizedPasswords[index].IPv6 + "\n"
 		}
 		if showPass == true {

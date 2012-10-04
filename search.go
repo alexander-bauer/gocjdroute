@@ -22,3 +22,21 @@ func SearchAuth(conf *cjdngo.Conf, term string) []int {
 	}
 	return matches
 }
+
+//SearchConnectTo searches for 'term' in both the non-essential and 'connection detail' fields in the ConnectTo map owned by 'conf.'
+//Returns a []string containing a list of the 'connection detail' fields (which identify them within the map) of all connection blocks which match.
+func SearchConnectTo(conf *cjdngo.Conf, term string) []string {
+	matches := make([]string, 0)
+
+	for i := range conf.Interfaces.UDPInterface.ConnectTo {
+		//check if the Name field contains it...
+		if strings.Contains(conf.Interfaces.UDPInterface.ConnectTo[i].Name, term) {
+			matches = append(matches, i)
+		} else if strings.Contains(conf.Interfaces.UDPInterface.ConnectTo[i].Location, term) {
+			matches = append(matches, i)
+		} else if strings.Contains(conf.Interfaces.UDPInterface.ConnectTo[i].IPv6, term) {
+			matches = append(matches, i)
+		}
+	}
+	return matches
+}
