@@ -12,6 +12,11 @@ func UIAuthorize(conf *cjdngo.Conf, name, location, ipv6 string) {
 	print("New authorized node:\n" + ListAuth(conf, []int{len(conf.AuthorizedPasswords)-1}, true) + "\n")
 	print("Details for new node:\n")
 	print(MakeConnectTo(conf, p, false) + "\n")
+	err := cjdngo.WriteConf(*fFile, *conf)
+	log.Println("Wrote conf to file " + *fFile)
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 //UIConnectTo is a wrapper for lower-level connection functions. It creates a Connection to the described node, given enough information. The arguments 'name,' 'location,' and 'ipv6' are optional.
@@ -28,4 +33,10 @@ func UIConnectTo(conf *cjdngo.Conf, connectionDetails, password, publicKey, name
 		ConnectTo(conf, connectionDetails, password, publicKey, name, location, ipv6)
 		print("New connection block:\n" + ListConnectTo(conf, []string{connectionDetails}, false))
 	}
+	err := cjdngo.WriteConf(*fFile, *conf)
+	log.Println("Wrote conf to file " + *fFile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return
 }
