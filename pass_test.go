@@ -17,8 +17,18 @@ func TestAuthorize(t *testing.T) {
 	}
 	p := Authorize(conf, "test", "Maryland", "")
 	t.Log("Authorized node of 'test' with password: " + p)
+	p = Authorize(conf, "test_two", "Maryland", "")
+	t.Log("Authorized node of 'test_two' with password: " + p)
 	
-	print(ListAuth(conf, []int{0, 1}, true))
+	ConnectTo(conf, "an.ip.v4.addr:port", "password", "publickey.k", "testConnection", "Maryland", "")
+	ConnectTo(conf, "an.oth.er.addr:port", "password", "publickey.k", "testConnection", "Maryland", "")
+	
+	print(ListConnectTo(conf, SearchConnectTo(conf, ""), false))
+	
+	RemoveConnectTo(conf, "an.ip.v4.addr:port")
+	print("removed an.ip.v4.addr:port\n")
+	
+	print(ListConnectTo(conf, SearchConnectTo(conf, ""), false))
 	
 	err = cjdngo.WriteConf("./temp.conf", *conf)
 	if err != nil {

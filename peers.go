@@ -12,6 +12,11 @@ func Authorize(conf *cjdngo.Conf, name, location, ipv6 string) string {
 	return p
 }
 
+//Removes the authorization block at 'index' from 'conf.' This permanently removes that node's password and details from the authorized section.
+func RemoveAuth(conf *cjdngo.Conf, index int) {
+	//delete(conf.AuthorizedPasswords, index)
+}
+
 //ConnectTo adds an entry to the "connectTo" block (under 'interfaces.UDPInterface') with the given details. The arguments 'connection,' 'password,' and 'publicKey' are required, but 'name,' 'location,' and 'ipv6' are optional. They are recommended for identifying the target of the connection.
 //This will exit without making changes to 'conf' if any of the required arguments are not provided.
 func ConnectTo(conf *cjdngo.Conf, connection, password, publicKey, name, location, ipv6 string) {
@@ -23,6 +28,11 @@ func ConnectTo(conf *cjdngo.Conf, connection, password, publicKey, name, locatio
 	//creating the connnection
 	conf.Interfaces.UDPInterface.ConnectTo[connection] = *conn
 	//add the new entry
+}
+
+//Removes the connection identified exactly by 'connectionDetail' from 'conf.'
+func RemoveConnectTo(conf *cjdngo.Conf, connectionDetail string) {
+	delete(conf.Interfaces.UDPInterface.ConnectTo, connectionDetail)
 }
 
 //ConnectToMap allows for adding multiple Connections in one operation. It is primarly meant as a back end for ConnectToJSON, but can be used alone, as well.
