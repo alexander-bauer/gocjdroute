@@ -16,7 +16,16 @@ func Authorize(conf *cjdngo.Conf, name, location, ipv6 string) string {
 
 //Removes the authorization block at 'index' from 'conf.' This permanently removes that node's password and details from the authorized section.
 func RemoveAuth(conf *cjdngo.Conf, index int) {
-	//delete(conf.AuthorizedPasswords, index)
+	newAuthBlock := make([]cjdngo.AuthPass, len(conf.AuthorizedPasswords)-1)
+	//This will copy all AuthPasses into newAuthBlock except the one specified by 'index'
+	j := 0 //j will be the newAuthBlock index iterator
+	for i := range conf.AuthorizedPasswords {
+		if i != index {
+			newAuthBlock[j] = conf.AuthorizedPasswords[i]
+			j++
+		}
+	}
+	conf.AuthorizedPasswords = newAuthBlock
 }
 
 //ConnectTo adds an entry to the "connectTo" block (under 'interfaces.UDPInterface') with the given details. The arguments 'connection,' 'password,' and 'publicKey' are required, but 'name,' 'location,' and 'ipv6' are optional. They are recommended for identifying the target of the connection.

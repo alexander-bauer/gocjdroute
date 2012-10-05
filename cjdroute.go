@@ -11,6 +11,7 @@ var fFile = flag.String("file", "./example.conf", "The config file to operate on
 
 var fAuthorize = flag.Bool("auth", false, "Authorize and print connection details for a new node of form: [Node Owner's Name] [Node Location] [Node IPv6 Address]")
 var fConnectTo = flag.Bool("connect", false, "Add a ConnectTo block entry for the described node of form: [Connection Information (such as IPv4:port)] [Password] [Public Key] [Node Owner's Name] [Node Location] [Node IPv6 Address]")
+var fRemove = flag.Bool("remove", false, "Remove an authorization, identified by index, or connection, identified by connection details, block.")
 
 var fList = flag.Bool("list", false, "List all authorization and connection blocks.")
 var fListAuth = flag.Bool("list-auth", false, "List all authorized nodes.")
@@ -61,6 +62,10 @@ func main() {
 	if *fConnectTo {
 		//UIConnectTo will import a JSON map if it is the first argument, and behave normally if given other arguments.
 		UIConnectTo(config, flag.Arg(0), flag.Arg(1), flag.Arg(2), flag.Arg(3), flag.Arg(4), flag.Arg(5))
+		return
+	}
+	if *fRemove {
+		UIRemove(config, flag.Arg(0))
 		return
 	}
 
