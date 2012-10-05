@@ -4,7 +4,7 @@ import (
 	"cjdngo"
 	"flag"
 	"log"
-	"os"
+	"io/ioutil"
 )
 
 var fFile = flag.String("file", "./example.conf", "The config file to operate on.")
@@ -29,6 +29,7 @@ var indexesAuth = []int{}         //indexesAuth will be used to identify auth fi
 var indexesConnectTo = []string{} //connectAuth will be used to identify connection blocks based on search terms
 
 func main() {
+	log.SetOutput(ioutil.Discard) //Comment this line out for logging.
 	flag.Parse()
 
 	config, err := cjdngo.ReadConf(*fFile)
@@ -68,6 +69,4 @@ func main() {
 		UIRemove(config, flag.Arg(0))
 		return
 	}
-
-	os.Exit(0)
 }
