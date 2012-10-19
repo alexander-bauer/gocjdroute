@@ -71,7 +71,7 @@ Get a copy of GoCjdroute on your computer.
 ```bash
 git clone git@github.com:lukevers/GoCjdroute.git
 ```
-
+If for some reason it's not letting you clone it that way, use `https://github.com/lukevers/GoCjdroute.git` as an alternative.
 ### Build The Files
 Building the files is simple from the terminal.
 ```
