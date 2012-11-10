@@ -13,6 +13,9 @@ func GenPass(tag string) string {
 	for len(p) < 16 { //getting 128 bits
 		c := rand.Intn(0x59) //7 bit integers, 0x21-0x79 (inclusive)
 		c += 0x21            //we need ascii characters
+		if c == '\\' || c == '"' {
+			continue
+		} 
 		p += string(c)
 	}
 
