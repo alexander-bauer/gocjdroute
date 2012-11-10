@@ -38,18 +38,20 @@ func ListAuth(conf *cjdngo.Conf, indexes []int, showPass bool) string {
 	var s string
 
 	for i := range indexes {
-		index := indexes[i]
+		auth := conf.AuthorizedPasswords[indexes[i]]
 
-		s += "--- ( " + strconv.Itoa(index) + " )\n"
-		s += "Name:     " + conf.AuthorizedPasswords[index].Name + "\n"
-		if conf.AuthorizedPasswords[index].Location != "" {
-			s += "Location: " + conf.AuthorizedPasswords[index].Location + "\n"
+		s += "--- ( " + strconv.Itoa(indexes[i]) + " )\n"
+		if auth.Name != "" {
+			s += "Name:     " + auth.Name + "\n"
 		}
-		if conf.AuthorizedPasswords[index].IPv6 != "" {
-			s += "IPv6:     " + conf.AuthorizedPasswords[index].IPv6 + "\n"
+		if auth.Location != "" {
+			s += "Location: " + auth.Location + "\n"
+		}
+		if auth.IPv6 != "" {
+			s += "IPv6:     " + auth.IPv6 + "\n"
 		}
 		if showPass == true {
-			s += "Password: " + conf.AuthorizedPasswords[index].Password
+			s += "Password: " + auth.Password + "\n"
 		}
 		s += "\n"
 	}
@@ -60,19 +62,21 @@ func ListConnectTo(conf *cjdngo.Conf, indexes []string, showPass bool) string {
 	var s string
 
 	for i := range indexes {
-		index := indexes[i]
+		conn := conf.Interfaces.UDPInterface.ConnectTo[indexes[i]]
 
-		s += "--- ( " + index + " )\n"
-		s += "Name:      " + conf.Interfaces.UDPInterface.ConnectTo[index].Name + "\n"
-		if conf.Interfaces.UDPInterface.ConnectTo[index].Location != "" {
-			s += "Location:  " + conf.Interfaces.UDPInterface.ConnectTo[index].Location + "\n"
+		s += "--- ( " + indexes[i] + " )\n"
+		if conn.Name != "" {
+			s += "Name:      " + conn.Name + "\n"
 		}
-		if conf.Interfaces.UDPInterface.ConnectTo[index].IPv6 != "" {
-			s += "IPv6:      " + conf.Interfaces.UDPInterface.ConnectTo[index].IPv6 + "\n"
+		if conn.Location != "" {
+			s += "Location:  " + conn.Location + "\n"
 		}
-		s += "PublicKey: " + conf.Interfaces.UDPInterface.ConnectTo[index].PublicKey + "\n"
+		if conn.IPv6 != "" {
+			s += "IPv6:      " + conn.IPv6 + "\n"
+		}
+		s += "PublicKey: " + conn.PublicKey + "\n"
 		if showPass == true {
-			s += "Password:  " + conf.Interfaces.UDPInterface.ConnectTo[index].Password
+			s += "Password:  " + conn.Password + "\n"
 		}
 		s += "\n"
 	}
