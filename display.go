@@ -70,7 +70,7 @@ func ListConnectTo(conf *cjdngo.Conf, indexes []string, showPass bool) string {
 		if conf.Interfaces.UDPInterface.ConnectTo[index].IPv6 != "" {
 			s += "IPv6:      " + conf.Interfaces.UDPInterface.ConnectTo[index].IPv6 + "\n"
 		}
-		s += "PublicKey: " + conf.Interfaces.UDPInterface.ConnectTo[index].PublicKey
+		s += "PublicKey: " + conf.Interfaces.UDPInterface.ConnectTo[index].PublicKey + "\n"
 		if showPass == true {
 			s += "Password:  " + conf.Interfaces.UDPInterface.ConnectTo[index].Password
 		}
