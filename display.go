@@ -1,7 +1,7 @@
 package main
 
 import (
-	"cjdngo"
+	"github.com/SashaCrofter/cjdngo"
 	"strconv"
 	"encoding/json"
 	"log"
