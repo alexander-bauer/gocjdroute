@@ -7,7 +7,7 @@ import (
 	"io/ioutil"
 )
 
-var fFile = flag.String("file", "./example.conf", "The config file to operate on.")
+var fFile = flag.String("file", "/etc/cjdroute.conf", "The config file to operate on.")
 
 var fAuthorize = flag.Bool("auth", false, "Authorize and print connection details for a new node of form: [Node Owner's Name] [Node Location] [Node IPv6 Address]")
 var fConnectTo = flag.Bool("connect", false, "Add a ConnectTo block entry for the described node of form: [Connection Information (such as IPv4:port)] [Password] [Public Key] [Node Owner's Name] [Node Location] [Node IPv6 Address]")
