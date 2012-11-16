@@ -6,7 +6,7 @@ import (
 )
 
 const (
-	Version  = "1.0"
+	Version  = "1.0.1"
 	ConfPath = "./example.conf"
 	//LogOutput = ioutil.Discard
 )
