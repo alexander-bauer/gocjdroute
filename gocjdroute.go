@@ -64,7 +64,16 @@ func main() {
 			index = -1
 		}
 		Authorize(Conf, index, nil)
+
+	case connCmd:
+		Connect(Conf, argument, nil)
+
 	default:
 		usage()
+	}
+
+	err = cjdngo.WriteConf(File, *Conf)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
