@@ -80,6 +80,10 @@ func main() {
 	case lsConnCmd:
 		ListConnection(Conf, argument)
 
+	case rmCmd:
+		willWrite = true
+		Remove(Conf, argument)
+
 	default:
 		usage()
 	}

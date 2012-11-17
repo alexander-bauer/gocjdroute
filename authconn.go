@@ -165,6 +165,36 @@ func ListConnection(conf *cjdngo.Conf, term string) {
 	fmt.Println(string(b))
 }
 
+func Remove(conf *cjdngo.Conf, target string) {
+	//Try to convert it to a number. If so,
+	//then remove a password. Otherwise,
+	//remove a connection.
+	index, err := strconv.Atoi(target)
+	switch err {
+	case nil: //Password case
+		if index >= len(conf.AuthorizedPasswords) || index < 0 {
+			fmt.Println("There is no password of that index.")
+			return
+		}
+		//Initialize a new array with length - 1
+		newAuth := make([]cjdngo.AuthPass, len(conf.AuthorizedPasswords)-1)
+
+		//Copy the first part, stopping before removed index.
+		copy(newAuth[:index], conf.AuthorizedPasswords[:index])
+		//Copy the second part, starting after the removed index.
+		copy(newAuth[index:], conf.AuthorizedPasswords[index+1:])
+		conf.AuthorizedPasswords = newAuth
+
+	default: //Connection case
+		oldLen := len(conf.Interfaces.UDPInterface.ConnectTo)
+		delete(conf.Interfaces.UDPInterface.ConnectTo, target)
+		if oldLen == len(conf.Interfaces.UDPInterface.ConnectTo) {
+			fmt.Println("There is no connection identified by that string.")
+			return
+		}
+	}
+}
+
 //This is a convenience function which prints a given prompt onscreen in the form 'prompt (valueOfField): ' or just 'prompt:' if valueofField is blank.
 func ui(prompt string, field *string) {
 	var input string
