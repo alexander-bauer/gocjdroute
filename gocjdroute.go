@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	Version = "1.1"
+	Version = "1.2"
 
 	authCmd   = "auth"
 	connCmd   = "conn"
