@@ -144,6 +144,27 @@ func ListAuthorization(conf *cjdngo.Conf, term string) {
 	fmt.Println(string(b))
 }
 
+//ListConnection is equivalent to ListAuthorization, except that it acts on conf.Interfaces.UDPInterface.ConnectTo. Additionally, it searches the PublicKey field of the connection for the term.
+func ListConnection(conf *cjdngo.Conf, term string) {
+	display := make(map[string]cjdngo.Connection)
+
+	for k, v := range conf.Interfaces.UDPInterface.ConnectTo {
+		if strings.Contains(v.Name, term) || strings.Contains(v.Location, term) || strings.Contains(v.IPv6, term) || strings.Contains(v.Password, term) || strings.Contains(v.PublicKey, term) {
+			display[k] = v
+		}
+	}
+	if len(display) == 0 {
+		//If there are no elements to display,
+		//don't bother marshalling the result.
+		return
+	}
+	b, err := json.MarshalIndent(display, "", "    ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(b))
+}
+
 //This is a convenience function which prints a given prompt onscreen in the form 'prompt (valueOfField): ' or just 'prompt:' if valueofField is blank.
 func ui(prompt string, field *string) {
 	var input string

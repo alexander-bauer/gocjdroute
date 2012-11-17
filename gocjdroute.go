@@ -77,6 +77,9 @@ func main() {
 	case lsAuthCmd:
 		ListAuthorization(Conf, argument)
 
+	case lsConnCmd:
+		ListConnection(Conf, argument)
+
 	default:
 		usage()
 	}
