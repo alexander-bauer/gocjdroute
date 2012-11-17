@@ -6,6 +6,8 @@ import (
 	"github.com/SashaCrofter/cjdngo"
 	"log"
 	"math/rand"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -118,6 +120,23 @@ func Connect(conf *cjdngo.Conf, connDetails string, credentials *cjdngo.Connecti
 	}
 	conf.Interfaces.UDPInterface.ConnectTo[connDetails] = *conn
 	fmt.Println("Connection to", connDetails, "added. You may want to restart cjdns.")
+}
+
+//ListAuthorization is meant to display authorization blocks based on a search term. All authoriziation blocks are displayed if the term is omitted. Otherwise, only authorization blocks which have a name, location, IPv6, or password which partially matches the term are displayed.
+func ListAuthorization(conf *cjdngo.Conf, term string) {
+	display := make(map[string]cjdngo.AuthPass)
+
+	for i := range conf.AuthorizedPasswords {
+		pw := conf.AuthorizedPasswords[i]
+		if strings.Contains(pw.Name, term) || strings.Contains(pw.Location, term) || strings.Contains(pw.IPv6, term) || strings.Contains(pw.Password, term) {
+			display[strconv.Itoa(i)] = pw
+		}
+	}
+	b, err := json.MarshalIndent(display, "", "    ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(string(b))
 }
 
 //This is a convenience function which prints a given prompt onscreen in the form 'prompt (valueOfField): ' or just 'prompt:' if valueofField is blank.

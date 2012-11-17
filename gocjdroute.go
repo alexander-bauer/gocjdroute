@@ -56,9 +56,14 @@ func main() {
 	}
 	//log.SetOutput(ioutil.Discard)
 
+	//This will be used to determine whether the
+	//configuration should be rewritten afterward.
+	willWrite := false
+
 	//Perform an appropriate action, based on the subcommand.
 	switch cmd {
 	case authCmd:
+		willWrite = true
 		index, err := strconv.Atoi(argument)
 		if err != nil {
 			index = -1
@@ -66,14 +71,20 @@ func main() {
 		Authorize(Conf, index, nil)
 
 	case connCmd:
+		willWrite = true
 		Connect(Conf, argument, nil)
+
+	case lsAuthCmd:
+		ListAuthorization(Conf, argument)
 
 	default:
 		usage()
 	}
 
-	err = cjdngo.WriteConf(File, *Conf)
-	if err != nil {
-		log.Fatal(err)
+	if willWrite {
+		err = cjdngo.WriteConf(File, *Conf)
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 }
