@@ -132,6 +132,11 @@ func ListAuthorization(conf *cjdngo.Conf, term string) {
 			display[strconv.Itoa(i)] = pw
 		}
 	}
+	if len(display) == 0 {
+		//If there are no elements to display,
+		//don't bother marshalling the result.
+		return
+	}
 	b, err := json.MarshalIndent(display, "", "    ")
 	if err != nil {
 		log.Fatal(err)
