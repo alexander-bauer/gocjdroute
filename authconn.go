@@ -31,16 +31,19 @@ func Authorize(conf *cjdngo.Conf, index int, userDetails *cjdngo.AuthPass) {
 		fmt.Print("Please enter a name" + existing(auth.Name) + ": ")
 		fmt.Scanln(&ui)
 		auth.Name = replace(auth.Name, ui)
+		ui = ""
 
 		//Likewise, take the location from the user.
 		fmt.Print("Please enter a location" + existing(auth.Location) + ": ")
 		fmt.Scanln(&ui)
 		auth.Location = replace(auth.Location, ui)
+		ui = ""
 
 		//The IPv6 address isn't usually known, but ask anyway.
 		fmt.Print("Please enter an IPv6 address" + existing(auth.IPv6) + ": ")
 		fmt.Scanln(&ui)
 		auth.IPv6 = replace(auth.IPv6, ui)
+		ui = ""
 
 		if len(auth.Password) == 0 {
 			auth.Password = replace(auth.Password, getPass(auth.Name))
