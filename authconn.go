@@ -40,14 +40,51 @@ func Authorize(conf *cjdngo.Conf, index int, userDetails *cjdngo.AuthPass) {
 			auth.Password = getPass(auth.Name)
 		}
 	}
-	b, err := json.MarshalIndent(auth, "        ", "    ")
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println("        " + string(b))
+	//Now we check whether we should append it to the end,
+	//or assume the changes are already in place. (The latter
+	//case is always true if we are editing.)
 	if willAppend {
 		conf.AuthorizedPasswords = append(conf.AuthorizedPasswords, *auth)
 	}
+
+	//Finally, we need to generate some connection details
+	//that the authorized party can use. We check to make
+	//sure that the connection details are in place.
+	if len(conf.Name) == 0 {
+		//If the user did not supply a name, ask for one,
+		//which will be written back to the configuration.
+		ui("Please enter your name or username", &conf.Name)
+	}
+	if len(conf.Location) == 0 {
+		//Similarly for location.
+		ui("Please enter your displayed location", &conf.Location)
+	}
+	for len(conf.TunConn) == 0 {
+		var ipv4 string
+		//If there aren't any details in place, force
+		//the user to add them. These will be written
+		//back to the configuration.
+		ui("Please enter your IPv4 address", &ipv4)
+		ipv4 += conf.Interfaces.UDPInterface.Bind[7:] //cjdns port
+		conf.TunConn = ipv4
+	}
+
+	//Initialize a map with length 1, which will be used
+	//to display our new details.
+	display := make(map[string]*cjdngo.Connection, 1)
+
+	display[conf.TunConn] = &cjdngo.Connection{
+		Name:      conf.Name,
+		Location:  conf.Location,
+		IPv6:      conf.IPv6,
+		Password:  auth.Password,
+		PublicKey: conf.PublicKey,
+	}
+	b, err := json.MarshalIndent(display, "            ", "    ")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println("\n            ", string(b), "\nPlease send these credentials to your peer.")
 }
 
 func Connect(conf *cjdngo.Conf, connDetails string, credentials *cjdngo.Connection) {
