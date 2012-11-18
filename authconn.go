@@ -1,12 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"github.com/SashaCrofter/cjdngo"
 	"log"
 	"math/rand"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -46,7 +47,7 @@ func Authorize(conf *cjdngo.Conf, index int, jsonArg []byte) {
 		var inAuth cjdngo.AuthPass
 		err := json.Unmarshal(jsonArg, &inAuth)
 		if err != nil {
-			fmt.Println("Invalid authorized password.")
+			println("Invalid authorized password.")
 			return
 		}
 		auth = &inAuth
@@ -97,7 +98,7 @@ func Authorize(conf *cjdngo.Conf, index int, jsonArg []byte) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println("\n            ", string(b), "\nPlease send these credentials to your peer.")
+	println("\n            ", string(b), "\nPlease send these credentials to your peer.")
 }
 
 func Connect(conf *cjdngo.Conf, connDetails string, jsonArg []byte) {
@@ -130,19 +131,19 @@ func Connect(conf *cjdngo.Conf, connDetails string, jsonArg []byte) {
 		ui("Please enter the target's public key", &conn.PublicKey)
 
 		conf.Interfaces.UDPInterface.ConnectTo[connDetails] = *conn
-		fmt.Println("Connection to", connDetails, "added. You may want to restart cjdns.")
+		println("Connection to", connDetails, "added. You may want to restart cjdns.")
 	} else { //If so, just use the JSON.
 		var inConn map[string]cjdngo.Connection
 		err := json.Unmarshal(jsonArg, &inConn)
 		if err != nil || len(inConn) == 0 {
-			fmt.Println("Invalid connection.")
+			println("Invalid connection.")
 			return
 		}
 		for k, v := range inConn {
 			conf.Interfaces.UDPInterface.ConnectTo[k] = v
-			fmt.Println("Connection to", k, "added.")
+			println("Connection to", k, "added.")
 		}
-		fmt.Println("You may want to restart cjdns.")
+		println("You may want to restart cjdns.")
 	}
 }
 
@@ -174,7 +175,7 @@ func ListAuthorization(conf *cjdngo.Conf, term string) {
 		//marking it with its index.
 		b = bytes.Replace(b, []byte("    {\n"), []byte("    { // "+strconv.Itoa(indexes[i])+"\n"), 1)
 	}
-	fmt.Println(string(b))
+	println(string(b))
 }
 
 //ListConnection is equivalent to ListAuthorization, except that it acts on conf.Interfaces.UDPInterface.ConnectTo. Additionally, it searches the PublicKey field of the connection for the term.
@@ -195,7 +196,7 @@ func ListConnection(conf *cjdngo.Conf, term string) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(b))
+	println(string(b))
 }
 
 func Remove(conf *cjdngo.Conf, target string) {
@@ -206,7 +207,7 @@ func Remove(conf *cjdngo.Conf, target string) {
 	switch err {
 	case nil: //Password case
 		if index >= len(conf.AuthorizedPasswords) || index < 0 {
-			fmt.Println("There is no password of that index.")
+			println("There is no password of that index.")
 			return
 		}
 		//Initialize a new array with length - 1
@@ -222,7 +223,7 @@ func Remove(conf *cjdngo.Conf, target string) {
 		oldLen := len(conf.Interfaces.UDPInterface.ConnectTo)
 		delete(conf.Interfaces.UDPInterface.ConnectTo, target)
 		if oldLen == len(conf.Interfaces.UDPInterface.ConnectTo) {
-			fmt.Println("There is no connection identified by that string.")
+			println("There is no connection identified by that string.")
 			return
 		}
 	}
@@ -230,11 +231,16 @@ func Remove(conf *cjdngo.Conf, target string) {
 
 //This is a convenience function which prints a given prompt onscreen in the form 'prompt (valueOfField): ' or just 'prompt:' if valueofField is blank.
 func ui(prompt string, field *string) {
-	var input string
+	reader := bufio.NewReader(os.Stdin)
 
-	fmt.Print(prompt + existing(*field) + ": ")
-	fmt.Scanln(&input)
-	replace(field, input)
+	print(prompt + existing(*field) + ": ")
+	line, err := reader.ReadString('\n')
+	if err != nil {
+		log.Println(err)
+		return
+	}
+	line = line[:len(line)-1] //Remove the newline byte.
+	replace(field, line)
 }
 
 //This is a convenience function that is meant to show a default value, when passed a string. The string is the existing value in a field, and it is returned as " (value)" if it exists, and "" if it does not exist.
