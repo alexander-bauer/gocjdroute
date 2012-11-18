@@ -10,7 +10,7 @@ GoCjdroute is a tool, written in [Go](http://golang.org/), for editing your [cjd
 ## How To Use
 GoCjdroute is a command-line program. Some usage cases are presented below, followed by a more in-depth description of flags.
 
-**GoCjdroute will remove the comments in your config file. They cannot be maintained or gotten back. *Please back up your config file. Even the best user can make a mistake.***
+**GoCjdroute will remove the comments in your config file. They cannot be maintained or gotten back.** ***Please back up your config file. Even the best user can make a mistake.***
 
 ### The Commands
 GoCjdroute has five primary commands. These are `auth`, `conn`, `lsa`, `lsc`, and `rm`. The syntaxes for any GoCjdroute command is `gocjdroute <command> [argument] [additional arguments]`. For some commands, `[argument]` is required, and in others, it is not.
