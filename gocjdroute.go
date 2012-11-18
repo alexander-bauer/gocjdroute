@@ -22,7 +22,8 @@ const (
 var (
 	Conf *cjdngo.Conf
 
-	File string //The file (set by flag) to edit or view.
+	File    string //The file (set by flag) to edit or view.
+	UseJSON bool   //Use argument as JSON of the appropriate type.
 
 	cmd      string //The action to perform, (auth, conn, lsa, lsc, rm)
 	argument string //The argument following cmd, a search term, index, or name
@@ -32,9 +33,15 @@ func init() {
 	const (
 		defaultFile = "./example.conf"
 		usageFile   = "the cjdroute configuration file to edit or view"
+
+		defaultUseJSON = false
+		usageUseJSON   = "supply a JSON-encoded block instead of interactive arguments"
 	)
 	flag.StringVar(&File, "file", defaultFile, usageFile)
 	flag.StringVar(&File, "f", defaultFile, usageFile+" (shorthand)")
+
+	flag.BoolVar(&UseJSON, "json", defaultUseJSON, usageUseJSON)
+	flag.BoolVar(&UseJSON, "j", defaultUseJSON, usageUseJSON+" (shorthand)")
 }
 
 func usage() {
@@ -49,6 +56,16 @@ func main() {
 
 	cmd = strings.ToLower(flag.Arg(0))
 	argument = flag.Arg(1)
+
+	var jsonArg []byte
+	if UseJSON {
+		var jsonTmp string
+		for i := 2; i < flag.NArg(); i++ {
+			//Put all of the remaining arguments into the string json.
+			jsonTmp += flag.Arg(i)
+		}
+		jsonArg = []byte(jsonTmp)
+	}
 
 	Conf, err := cjdngo.ReadConf(File)
 	if err != nil {
@@ -68,11 +85,15 @@ func main() {
 		if err != nil {
 			index = -1
 		}
-		Authorize(Conf, index, nil)
+		Authorize(Conf, index, jsonArg)
 
 	case connCmd:
 		willWrite = true
-		Connect(Conf, argument, nil)
+		if !UseJSON {
+			Connect(Conf, argument, nil)
+		} else {
+			Connect(Conf, argument, jsonArg)
+		}
 
 	case lsAuthCmd:
 		ListAuthorization(Conf, argument)
