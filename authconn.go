@@ -43,13 +43,13 @@ func Authorize(conf *cjdngo.Conf, index int, jsonArg []byte) {
 			auth.Password = getPass(auth.Name)
 		}
 	} else {
-		var inAuth []cjdngo.AuthPass
+		var inAuth cjdngo.AuthPass
 		err := json.Unmarshal(jsonArg, &inAuth)
-		if err != nil || len(inAuth) == 0 {
+		if err != nil {
 			fmt.Println("Invalid authorized password.")
 			return
 		}
-		auth = &inAuth[0]
+		auth = &inAuth
 	}
 	//Now we check whether we should append it to the end,
 	//or assume the changes are already in place. (The latter
