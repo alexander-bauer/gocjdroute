@@ -182,7 +182,7 @@ func ListConnection(conf *cjdngo.Conf, term string) {
 	display := make(map[string]cjdngo.Connection)
 
 	for k, v := range conf.Interfaces.UDPInterface.ConnectTo {
-		if strings.Contains(k, term), strings.Contains(v.Name, term) || strings.Contains(v.Location, term) || strings.Contains(v.IPv6, term) || strings.Contains(v.Password, term) || strings.Contains(v.PublicKey, term) {
+		if strings.Contains(k, term) || strings.Contains(v.Name, term) || strings.Contains(v.Location, term) || strings.Contains(v.IPv6, term) || strings.Contains(v.Password, term) || strings.Contains(v.PublicKey, term) {
 			display[k] = v
 		}
 	}
