@@ -83,7 +83,16 @@ func main() {
 		willWrite = true
 		index, err := strconv.Atoi(argument)
 		if err != nil {
+			//If we can't parse the argument for whatever
+			//reason, assume that it's an append.
 			index = -1
+			if UseJSON {
+				//If we couldn't parse the argument, then
+				//it might've been JSON, so treat it as
+				//such.
+				Authorize(Conf, index, append([]byte(argument), jsonArg...))
+				break
+			}
 		}
 		Authorize(Conf, index, jsonArg)
 
@@ -92,7 +101,7 @@ func main() {
 		if !UseJSON {
 			Connect(Conf, argument, nil)
 		} else {
-			Connect(Conf, argument, jsonArg)
+			Connect(Conf, "", append([]byte(argument), jsonArg...))
 		}
 
 	case lsAuthCmd:
