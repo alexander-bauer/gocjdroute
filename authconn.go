@@ -149,11 +149,13 @@ func Connect(conf *cjdngo.Conf, connDetails string, jsonArg []byte) {
 //ListAuthorization is meant to display authorization blocks based on a search term. All authoriziation blocks are displayed if the term is omitted. Otherwise, only authorization blocks which have a name, location, IPv6, or password which partially matches the term are displayed.
 func ListAuthorization(conf *cjdngo.Conf, term string) {
 	display := make([]cjdngo.AuthPass, 0)
+	indexes := make([]int, 0)
 
 	for i := range conf.AuthorizedPasswords {
 		pw := conf.AuthorizedPasswords[i]
 		if strings.Contains(pw.Name, term) || strings.Contains(pw.Location, term) || strings.Contains(pw.IPv6, term) || strings.Contains(pw.Password, term) {
 			display = append(display, pw)
+			indexes = append(indexes, i)
 		}
 	}
 	if len(display) == 0 {
@@ -170,7 +172,7 @@ func ListAuthorization(conf *cjdngo.Conf, term string) {
 	for i := 0; i < len(display); i++ {
 		//Add a comment to every AuthPass element
 		//marking it with its index.
-		b = bytes.Replace(b, []byte("    {\n"), []byte("    { // "+strconv.Itoa(i)+"\n"), 1)
+		b = bytes.Replace(b, []byte("    {\n"), []byte("    { // "+strconv.Itoa(indexes[i])+"\n"), 1)
 	}
 	fmt.Println(string(b))
 }
