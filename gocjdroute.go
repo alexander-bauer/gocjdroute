@@ -31,7 +31,7 @@ var (
 
 func init() {
 	const (
-		defaultFile = "./example.conf"
+		defaultFile = "/etc/cjdroute.conf"
 		usageFile   = "the cjdroute configuration file to edit or view"
 
 		defaultUseJSON = false
