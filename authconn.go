@@ -13,9 +13,9 @@ import (
 	"time"
 )
 
-//Authorize takes a cjdngo.Conf object, an array index, a signed integer, and a cjdngo.AuthPass, which is meant to be parsed from user input. If the user input has been parsed into an AuthBlock already, then it can be passed and added directly. If they are not supplied (nil) then Authorize initiates a dialogue with the user to recieve them.
-//The first argument refers to the index at which to edit or add the new password. If it is -1, then a new password and authorization block is added and appended to the list.
-func Authorize(conf *cjdngo.Conf, index int, jsonArg []byte) {
+//Authorize takes a cjdngo.Conf object, the details to create the displayed connection block with (either TunConn or EthConn), an array index, a signed integer, and a cjdngo.AuthPass, which is meant to be parsed from user input. If the user input has been parsed into an AuthBlock already, then it can be passed and added directly. If they are not supplied (nil) then Authorize initiates a dialogue with the user to recieve them.
+//The third argument refers to the index at which to edit or add the new password. If it is -1, then a new password and authorization block is added and appended to the list.
+func Authorize(conf *cjdngo.Conf, details string, index int, jsonArg []byte) {
 	var auth *cjdngo.AuthPass
 	var willAppend bool
 
@@ -87,7 +87,7 @@ func Authorize(conf *cjdngo.Conf, index int, jsonArg []byte) {
 	//to display our new details.
 	display := make(map[string]*cjdngo.Connection, 1)
 
-	display[conf.TunConn] = &cjdngo.Connection{
+	display[details] = &cjdngo.Connection{
 		Name:      conf.Name,
 		Location:  conf.Location,
 		IPv6:      conf.IPv6,
@@ -101,7 +101,7 @@ func Authorize(conf *cjdngo.Conf, index int, jsonArg []byte) {
 	println("\n            ", string(b), "\nPlease send these credentials to your peer.")
 }
 
-func Connect(conf *cjdngo.Conf, connDetails string, jsonArg []byte) {
+func Connect(conf *cjdngo.Conf, iface *cjdngo.InterfaceBlock, connDetails string, jsonArg []byte) {
 	//If credentials are not provided prebuilt, then we must take
 	//user input here.
 	if len(jsonArg) == 0 {
@@ -109,7 +109,7 @@ func Connect(conf *cjdngo.Conf, connDetails string, jsonArg []byte) {
 
 		//Check if the connDetails are already entered. If they are,
 		//we'll be editing, rather than adding a new block.
-		existing, isPresent := conf.Interfaces.UDPInterface.ConnectTo[connDetails]
+		existing, isPresent := iface.ConnectTo[connDetails]
 		if !isPresent {
 			conn = &cjdngo.Connection{}
 		} else {
@@ -130,7 +130,7 @@ func Connect(conf *cjdngo.Conf, connDetails string, jsonArg []byte) {
 		ui("Please enter the password", &conn.Password)
 		ui("Please enter the target's public key", &conn.PublicKey)
 
-		conf.Interfaces.UDPInterface.ConnectTo[connDetails] = *conn
+		iface.ConnectTo[connDetails] = *conn
 		println("Connection to", connDetails, "added. You may want to restart cjdns.")
 	} else { //If so, just use the JSON.
 		var inConn map[string]cjdngo.Connection
@@ -140,7 +140,7 @@ func Connect(conf *cjdngo.Conf, connDetails string, jsonArg []byte) {
 			return
 		}
 		for k, v := range inConn {
-			conf.Interfaces.UDPInterface.ConnectTo[k] = v
+			iface.ConnectTo[k] = v
 			println("Connection to", k, "added.")
 		}
 		println("You may want to restart cjdns.")
@@ -179,7 +179,7 @@ func ListAuthorization(conf *cjdngo.Conf, term string) {
 }
 
 //ListConnection is equivalent to ListAuthorization, except that it acts on conf.Interfaces.UDPInterface.ConnectTo. Additionally, it searches the PublicKey field of the connection for the term.
-func ListConnection(conf *cjdngo.Conf, term string) {
+func ListConnection(iface *cjdngo.InterfaceBlock, term string) {
 	display := make(map[string]cjdngo.Connection)
 
 	for k, v := range conf.Interfaces.UDPInterface.ConnectTo {
@@ -199,7 +199,7 @@ func ListConnection(conf *cjdngo.Conf, term string) {
 	println(string(b))
 }
 
-func Remove(conf *cjdngo.Conf, target string) {
+func Remove(conf *cjdngo.Conf, iface *cjdngo.InterfaceBlock, target string) {
 	//Try to convert it to a number. If so,
 	//then remove a password. Otherwise,
 	//remove a connection.
@@ -220,9 +220,9 @@ func Remove(conf *cjdngo.Conf, target string) {
 		conf.AuthorizedPasswords = newAuth
 
 	default: //Connection case
-		oldLen := len(conf.Interfaces.UDPInterface.ConnectTo)
-		delete(conf.Interfaces.UDPInterface.ConnectTo, target)
-		if oldLen == len(conf.Interfaces.UDPInterface.ConnectTo) {
+		oldLen := len(iface.ConnectTo)
+		delete(iface.ConnectTo, target)
+		if oldLen == len(iface.ConnectTo) {
 			println("There is no connection identified by that string.")
 			return
 		}
