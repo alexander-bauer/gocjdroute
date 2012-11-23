@@ -107,11 +107,23 @@ func Connect(conf *cjdngo.Conf, iface *cjdngo.InterfaceBlock, connDetails string
 	if len(jsonArg) == 0 {
 		var conn *cjdngo.Connection
 
+		if len(iface.Bind) == 0 {
+			ui("Please enter the interface to bind to", &iface.Bind)
+		}
+
 		//Check if the connDetails are already entered. If they are,
 		//we'll be editing, rather than adding a new block.
 		existing, isPresent := iface.ConnectTo[connDetails]
 		if !isPresent {
 			conn = &cjdngo.Connection{}
+
+			//If the item wasn't there, then the map
+			//might not even be initialized. In that
+			//case, we must initialize it, to avoid
+			//any runtime errors.
+			if iface.ConnectTo == nil {
+				iface.ConnectTo = make(map[string]cjdngo.Connection)
+			}
 		} else {
 			conn = &existing
 		}
@@ -221,6 +233,10 @@ func Remove(conf *cjdngo.Conf, iface *cjdngo.InterfaceBlock, target string) {
 
 	default: //Connection case
 		oldLen := len(iface.ConnectTo)
+		if oldLen == 0 {
+			println("There are no entries in that interface.")
+			return
+		}
 		delete(iface.ConnectTo, target)
 		if oldLen == len(iface.ConnectTo) {
 			println("There is no connection identified by that string.")
