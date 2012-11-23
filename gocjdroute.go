@@ -24,7 +24,7 @@ var (
 
 	File    string //The file (set by flag) to edit or view.
 	UseJSON bool   //Use argument as JSON of the appropriate type.
-	UseETH bool //The argument to use ETHInterface
+	UseETH  bool   //The argument to use ETHInterface
 
 	cmd      string //The action to perform, (auth, conn, lsa, lsc, rm)
 	argument string //The argument following cmd, a search term, index, or name
@@ -37,16 +37,16 @@ func init() {
 
 		defaultUseJSON = false
 		usageUseJSON   = "supply a JSON-encoded block instead of interactive arguments"
-		
+
 		defaultUseETH = false
-		usageUseETH = "act on the ETHInterface block instead of UDPInterface"
+		usageUseETH   = "act on the ETHInterface block instead of UDPInterface"
 	)
 	flag.StringVar(&File, "file", defaultFile, usageFile)
 	flag.StringVar(&File, "f", defaultFile, usageFile+" (shorthand)")
 
 	flag.BoolVar(&UseJSON, "json", defaultUseJSON, usageUseJSON)
 	flag.BoolVar(&UseJSON, "j", defaultUseJSON, usageUseJSON+" (shorthand)")
-	
+
 	flag.BoolVar(&UseETH, "eth", defaultUseETH, usageUseETH)
 	flag.BoolVar(&UseETH, "e", defaultUseETH, usageUseETH+" (shorthand)")
 }
@@ -78,12 +78,12 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	
+
 	var iface *cjdngo.InterfaceBlock
 	if UseETH {
-		iface = Conf.Interfaces.ETHInterface
+		iface = &Conf.Interfaces.ETHInterface
 	} else {
-		iface = Conf.Interfaces.UDPInterface
+		iface = &Conf.Interfaces.UDPInterface
 	}
 	//log.SetOutput(ioutil.Discard)
 
@@ -95,14 +95,14 @@ func main() {
 	switch cmd {
 	case authCmd:
 		willWrite = true
-		
+
 		var details string
 		if UseETH {
 			details = Conf.EthConn
 		} else {
 			details = Conf.TunConn
 		}
-		
+
 		index, err := strconv.Atoi(argument)
 		if err != nil {
 			//If we can't parse the argument for whatever
@@ -112,7 +112,7 @@ func main() {
 				//If we couldn't parse the argument, then
 				//it might've been JSON, so treat it as
 				//such.
-				Authorize(Conf, index, append([]byte(argument), jsonArg...))
+				Authorize(Conf, details, index, append([]byte(argument), jsonArg...))
 				break
 			}
 		}

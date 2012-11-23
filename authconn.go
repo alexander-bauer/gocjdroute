@@ -182,7 +182,7 @@ func ListAuthorization(conf *cjdngo.Conf, term string) {
 func ListConnection(iface *cjdngo.InterfaceBlock, term string) {
 	display := make(map[string]cjdngo.Connection)
 
-	for k, v := range conf.Interfaces.UDPInterface.ConnectTo {
+	for k, v := range iface.ConnectTo {
 		if strings.Contains(k, term) || strings.Contains(v.Name, term) || strings.Contains(v.Location, term) || strings.Contains(v.IPv6, term) || strings.Contains(v.Password, term) || strings.Contains(v.PublicKey, term) {
 			display[k] = v
 		}
