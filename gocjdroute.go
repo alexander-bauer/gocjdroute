@@ -22,12 +22,12 @@ const (
 var (
 	Conf *cjdngo.Conf
 
-	File    string //The file (set by flag) to edit or view.
-	UseJSON bool   //Use argument as JSON of the appropriate type.
-	UseETH  bool   //The argument to use ETHInterface
+	File    string // The file (set by flag) to edit or view.
+	UseJSON bool   // Use argument as JSON of the appropriate type.
+	UseETH  bool   // The argument to use ETHInterface
 
-	cmd      string //The action to perform, (auth, conn, lsa, lsc, rm)
-	argument string //The argument following cmd, a search term, index, or name
+	cmd      string // The action to perform, (auth, conn, lsa, lsc, rm)
+	argument string // The argument following cmd, a search term, index, or name
 )
 
 func init() {
@@ -58,7 +58,7 @@ func usage() {
 }
 
 func main() {
-	//Define the flags, and parse them.
+	// Define the flags, and parse them.
 	flag.Parse()
 
 	cmd = strings.ToLower(flag.Arg(0))
@@ -68,7 +68,7 @@ func main() {
 	if UseJSON {
 		var jsonTmp string
 		for i := 2; i < flag.NArg(); i++ {
-			//Put all of the remaining arguments into the string json.
+			// Put all of the remaining arguments into the string json.
 			jsonTmp += flag.Arg(i)
 		}
 		jsonArg = []byte(jsonTmp)
@@ -93,13 +93,13 @@ func main() {
 			log.Fatal("Interface not present in config.")
 		}
 	}
-	//log.SetOutput(ioutil.Discard)
+	// log.SetOutput(ioutil.Discard)
 
-	//This will be used to determine whether the
-	//configuration should be rewritten afterward.
+	// This will be used to determine whether the configuration should
+	// be rewritten afterward.
 	willWrite := false
 
-	//Perform an appropriate action, based on the subcommand.
+	// Perform an appropriate action, based on the subcommand.
 	switch cmd {
 	case authCmd:
 		willWrite = true
@@ -113,14 +113,14 @@ func main() {
 
 		index, err := strconv.Atoi(argument)
 		if err != nil {
-			//If we can't parse the argument for whatever
-			//reason, assume that it's an append.
+			// If we can't parse the argument for whatever reason,
+			// assume that it's an append.
 			index = -1
 			if UseJSON {
-				//If we couldn't parse the argument, then
-				//it might've been JSON, so treat it as
-				//such.
-				Authorize(Conf, details, index, append([]byte(argument), jsonArg...))
+				// If we couldn't parse the argument, then it might've
+				// been JSON, so treat it as such.
+				Authorize(Conf, details, index,
+					append([]byte(argument), jsonArg...))
 				break
 			}
 		}
