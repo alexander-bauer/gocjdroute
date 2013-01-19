@@ -81,9 +81,17 @@ func main() {
 
 	var iface *cjdngo.InterfaceBlock
 	if UseETH {
-		iface = &Conf.Interfaces.ETHInterface
+		if len(Conf.Interfaces.ETHInterface) > 0 {
+			iface = &Conf.Interfaces.ETHInterface[0]
+		} else {
+			log.Fatal("Interface not present in config.")
+		}
 	} else {
-		iface = &Conf.Interfaces.UDPInterface
+		if len(Conf.Interfaces.UDPInterface) > 0 {
+			iface = &Conf.Interfaces.UDPInterface[0]
+		} else {
+			log.Fatal("Interface not present in config.")
+		}
 	}
 	//log.SetOutput(ioutil.Discard)
 

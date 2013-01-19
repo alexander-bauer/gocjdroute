@@ -79,7 +79,9 @@ func Authorize(conf *cjdngo.Conf, details string, index int, jsonArg []byte) {
 		//the user to add them. These will be written
 		//back to the configuration.
 		ui("Please enter your IPv4 address", &ipv4)
-		ipv4 += conf.Interfaces.UDPInterface.Bind[7:] //cjdns port
+
+		//BUG(DuoNoxSol): Panic if UDPInterface isn't present
+		ipv4 += conf.Interfaces.UDPInterface[0].Bind[7:] //cjdns port
 		conf.TunConn = ipv4
 	}
 
